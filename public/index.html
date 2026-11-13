@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriLink Ghana | Direct Farm-to-Market & Escrow Platform</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- Dynamic Role-Based Background Video Engine -->
+  <div class="video-bg-wrapper">
+    <video id="roleBgVideo" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80">
+      <source id="roleVideoSource" src="https://assets.mixkit.co/videos/preview/mixkit-fresh-vegetables-at-a-farmers-market-42874-large.mp4" type="video/mp4" />
+    </video>
+    <div class="video-overlay" id="videoOverlay"></div>
+  </div>
+
+  <!-- =========================================================
+       STRICT SINGLE-ROLE AUTHENTICATION GATEWAY
+  ========================================================== -->
+  <section id="authGateway" class="min-vh-100 d-flex align-items-center py-5 position-relative z-2">
+    <div class="container">
+      <div class="row justify-content-center align-items-center g-5">
+        
+        <div class="col-lg-6 text-white">
+          <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-10 border border-white border-opacity-25 rounded-pill px-3 py-2 mb-3">
+            <span class="brand-badge-sm"><i class="bi bi-sprout"></i></span>
+            <span class="fw-bold small tracking-wide">AGRILINK GHANA • ESCROW & USSD NETWORK</span>
+          </div>
+          <h1 class="display-5 fw-extrabold mb-3">Connecting Ghanaian Farms Directly to Trusted Buyers.</h1>
+          <p class="lead text-white-50 mb-4">
+            Each account is bound strictly to one verified role. Enjoy instant Mobile Money Escrow protection and offline USSD access (*920*77#).
+          </p>
+          <div class="row g-3 text-start">
+            <div class="col-sm-6">
+              <div class="p-3 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10">
+                <i class="bi bi-shield-lock-fill text-warning fs-4 mb-1 d-block"></i>
+                <div class="fw-bold">MoMo Escrow Vault</div>
+                <div class="small text-white-50">Funds release only after buyer OTP inspection.</div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="p-3 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10">
+                <i class="bi bi-patch-check-fill text-info fs-4 mb-1 d-block"></i>
+                <div class="fw-bold">Single-Role Security</div>
+                <div class="small text-white-50">Strict separation between Buyers, Farmers, Drivers & Admins.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5 col-md-8">
+          <div class="glass-card p-4 p-md-5">
+            <ul class="nav nav-pills nav-fill bg-light p-1 rounded-pill mb-4">
+              <li class="nav-item">
+                <button type="button" class="nav-link active rounded-pill fw-bold" id="tabRegister" onclick="setAuthMode('register')">Create Account</button>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="nav-link rounded-pill fw-bold" id="tabLogin" onclick="setAuthMode('login')">Sign In</button>
+              </li>
+            </ul>
+
+            <form id="authForm" onsubmit="handleAuthSubmit(event)">
+              <!-- Role Selection (Shown only during Account Creation) -->
+              <div id="registerFields">
+                <label class="form-label fw-bold small text-uppercase text-muted">1. Choose Your Permanent Account Role</label>
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <input type="radio" class="btn-check" name="userRole" id="roleBuyer" value="buyer" checked onchange="previewRoleTheme('buyer')" />
+                    <label class="btn btn-outline-success w-100 text-start p-2 rounded-3 fw-semibold" for="roleBuyer">
+                      <i class="bi bi-bag-check-fill d-block fs-5"></i> Bulk Buyer
+                    </label>
+                  </div>
+                  <div class="col-6">
+                    <input type="radio" class="btn-check" name="userRole" id="roleFarmer" value="farmer" onchange="previewRoleTheme('farmer')" />
+                    <label class="btn btn-outline-success w-100 text-start p-2 rounded-3 fw-semibold" for="roleFarmer">
+                      <i class="bi bi-tree-fill d-block fs-5"></i> Farmer / USSD
+                    </label>
+                  </div>
+                  <div class="col-6">
+                    <input type="radio" class="btn-check" name="userRole" id="roleDriver" value="driver" onchange="previewRoleTheme('driver')" />
+                    <label class="btn btn-outline-success w-100 text-start p-2 rounded-3 fw-semibold" for="roleDriver">
+                      <i class="bi bi-truck-front-fill d-block fs-5"></i> Logistics Driver
+                    </label>
+                  </div>
+                  <div class="col-6">
+                    <input type="radio" class="btn-check" name="userRole" id="roleAdmin" value="admin" onchange="previewRoleTheme('admin')" />
+                    <label class="btn btn-outline-success w-100 text-start p-2 rounded-3 fw-semibold" for="roleAdmin">
+                      <i class="bi bi-shield-check d-block fs-5"></i> System Admin
+                    </label>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold small">Full Name</label>
+                  <input type="text" id="authFullName" class="form-control" placeholder="e.g., Kwame Mensah" required />
+                </div>
+
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <label class="form-label fw-semibold small">Region</label>
+                    <select id="authRegion" class="form-select">
+                      <option value="Central">Central Region</option>
+                      <option value="Bono">Bono Region</option>
+                      <option value="Ashanti">Ashanti Region</option>
+                      <option value="Greater Accra">Greater Accra</option>
+                      <option value="Northern">Northern Region</option>
+                    </select>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label fw-semibold small">Ghana Card (Optional)</label>
+                    <input type="text" id="authGhanaCard" class="form-control" placeholder="GHA-000000000-0" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phone & PIN (Used for Both Registration & Sign In) -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold small">Mobile Money Phone Number</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light fw-bold">+233</span>
+                  <input type="tel" id="authPhone" class="form-control" placeholder="24 555 0199" required />
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label fw-semibold small">4-Digit Security PIN</label>
+                <input type="password" id="authPin" class="form-control" maxlength="4" pattern="\d{4}" placeholder="••••" required />
+              </div>
+
+              <button type="submit" id="authSubmitBtn" class="btn btn-success btn-lg w-100 fw-bold rounded-3 shadow">
+                Create Account & Enter Portal <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       LOCKED SINGLE-ROLE WORKSPACE (NO CROSS-ROLE SWITCHING)
+  ========================================================== -->
+  <div id="appWorkspace" class="d-none">
+
+    <nav class="navbar navbar-expand-lg navbar-dark glass-nav sticky-top">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="#">
+          <span class="brand-badge"><i class="bi bi-sprout"></i></span>
+          <span>AgriLink <span class="text-warning">Ghana</span></span>
+        </a>
+
+        <div class="d-flex align-items-center gap-3 ms-auto">
+          <div class="d-flex align-items-center gap-2 bg-white bg-opacity-10 px-3 py-1 rounded-pill text-white small">
+            <i class="bi bi-person-lock text-warning"></i>
+            <span id="navUserName" class="fw-bold">User</span>
+            <span id="navUserRoleBadge" class="badge bg-warning text-dark text-uppercase">ROLE</span>
+          </div>
+
+          <button class="btn btn-danger btn-sm rounded-pill fw-semibold px-3" onclick="logoutUser()">
+            <i class="bi bi-box-arrow-right me-1"></i> Logout
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-4 py-lg-5 position-relative z-2">
+
+      <!-- PORTAL 1: BUYER MARKETPLACE -->
+      <section id="portal-buyer" class="portal-section d-none">
+        <div class="row align-items-center mb-4 g-3">
+          <div class="col-lg-7 text-white">
+            <span class="badge bg-warning text-dark fw-semibold px-3 py-2 rounded-pill mb-2">
+              <i class="bi bi-lock-fill me-1"></i> 100% Mobile Money Escrow Protected
+            </span>
+            <h1 class="display-6 fw-extrabold mb-1">Welcome, <span class="user-greeting-name text-warning">Buyer</span></h1>
+            <p class="text-white-50 mb-0">Browse verified farm harvests. Funds remain locked in escrow until you inspect goods and share your 4-digit OTP.</p>
+          </div>
+          <div class="col-lg-5">
+            <div class="glass-card p-3">
+              <div class="row g-2">
+                <div class="col-sm-7">
+                  <div class="input-group">
+                    <span class="input-group-text bg-white border-0"><i class="bi bi-search text-success"></i></span>
+                    <input type="text" id="searchCrop" class="form-control border-0" placeholder="Search maize, yam, cassava..." oninput="renderMarketplace()" />
+                  </div>
+                </div>
+                <div class="col-sm-5">
+                  <select id="filterRegion" class="form-select border-0" onchange="renderMarketplace()">
+                    <option value="ALL">All Regions</option>
+                    <option value="Central">Central Region</option>
+                    <option value="Bono">Bono Region</option>
+                    <option value="Ashanti">Ashanti Region</option>
+                    <option value="Northern">Northern Region</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row g-4" id="marketplaceGrid"></div>
+      </section>
+
+      <!-- PORTAL 2: FARMER & LIVE USSD SIMULATOR -->
+      <section id="portal-farmer" class="portal-section d-none">
+        <div class="row g-4 align-items-start">
+          <div class="col-lg-7">
+            <div class="glass-card p-4 mb-4">
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-3 border-bottom border-secondary-subtle">
+                <div>
+                  <h4 class="fw-bold mb-1 text-dark">Farmer Portal: <span class="user-greeting-name">Farmer</span></h4>
+                  <span id="farmerVerifiedBadge" class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
+                    <i class="bi bi-patch-check-fill me-1"></i> Standard Tier
+                  </span>
+                </div>
+                <div class="text-end">
+                  <div class="small text-muted fw-semibold">TRUST REPUTATION</div>
+                  <div class="fs-4 fw-extrabold text-success" id="farmerTrustDisplay">100 PTS</div>
+                </div>
+              </div>
+
+              <h5 class="fw-bold mb-3"><i class="bi bi-plus-circle-fill text-success me-2"></i>Post New Harvest Listing</h5>
+              <form id="farmerListingForm" onsubmit="handleFarmerWebPost(event)">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Crop Type</label>
+                    <select id="cropName" class="form-select" required>
+                      <option value="White Maize (Grade A)">White Maize (Grade A)</option>
+                      <option value="Pona Yam Tubers">Pona Yam Tubers</option>
+                      <option value="Fresh Cassava">Fresh Cassava</option>
+                      <option value="Red Plantain">Red Plantain</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Region & Pickup Hub</label>
+                    <select id="cropRegion" class="form-select" required>
+                      <option value="Central">Central (Mankessim Hub)</option>
+                      <option value="Bono">Bono (Techiman Market)</option>
+                      <option value="Ashanti">Ashanti (Ejura Hub)</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Quantity (Bags / Crates)</label>
+                    <input type="number" id="cropQty" class="form-control" min="1" value="12" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Price per Bag (GH₵)</label>
+                    <input type="number" id="cropPrice" class="form-control" min="50" value="620" required />
+                  </div>
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold rounded-3">
+                      <i class="bi bi-cloud-upload-fill me-2"></i>Publish to Live Marketplace
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="glass-card p-4 text-center">
+              <span class="badge bg-dark text-warning mb-2 px-3 py-2 rounded-pill">
+                <i class="bi bi-broadcast me-1"></i> Offline Feature-Phone Simulator
+              </span>
+              <h5 class="fw-bold mb-1">No Internet? Dial *920*77#</h5>
+              <p class="small text-muted mb-3">Simulate feature-phone crop registration synced directly with your Express backend.</p>
+
+              <div class="feature-phone mx-auto">
+                <div class="phone-speaker"></div>
+                <div class="phone-brand">NOKIA • AGRI-USSD</div>
+                <div class="phone-screen text-start">
+                  <div class="d-flex justify-content-between small opacity-75 border-bottom border-dark pb-1 mb-2">
+                    <span>MTN-GH</span>
+                    <span>100% <i class="bi bi-battery-full"></i></span>
+                  </div>
+                  <div id="ussdOutput" class="ussd-text">Press "Dial *920*77#" below to start USSD session.</div>
+                  <div class="mt-2 pt-1 border-top border-dark d-flex align-items-center">
+                    <span class="me-1 fw-bold">></span>
+                    <input type="text" id="ussdInput" class="ussd-input-field" placeholder="Enter option..." maxlength="15" />
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2 my-2">
+                  <button type="button" class="btn btn-success btn-sm w-50 fw-bold" onclick="dialUSSD()"><i class="bi bi-telephone-fill me-1"></i>Dial *920*77#</button>
+                  <button type="button" class="btn btn-primary btn-sm w-50 fw-bold" onclick="sendUSSDInput()">Send <i class="bi bi-arrow-return-left"></i></button>
+                </div>
+                <div class="keypad-grid">
+                  <button type="button" onclick="pressKey('1')">1</button>
+                  <button type="button" onclick="pressKey('2')">2</button>
+                  <button type="button" onclick="pressKey('3')">3</button>
+                  <button type="button" onclick="pressKey('4')">4</button>
+                  <button type="button" onclick="pressKey('5')">5</button>
+                  <button type="button" onclick="pressKey('6')">6</button>
+                  <button type="button" onclick="pressKey('7')">7</button>
+                  <button type="button" onclick="pressKey('8')">8</button>
+                  <button type="button" onclick="pressKey('9')">9</button>
+                  <button type="button" onclick="pressKey('*')">*</button>
+                  <button type="button" onclick="pressKey('0')">0</button>
+                  <button type="button" onclick="clearUSSDKey()" class="text-danger">C</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PORTAL 3: LOGISTICS DRIVER HUB -->
+      <section id="portal-driver" class="portal-section d-none">
+        <div class="glass-card p-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+              <h3 class="fw-bold mb-1"><i class="bi bi-truck text-warning me-2"></i>Driver Dispatch: <span class="user-greeting-name">Driver</span></h3>
+              <p class="text-muted mb-0">Inspect produce at farm pickup, transit safely, and verify the buyer's 4-digit OTP to unlock MoMo payouts.</p>
+            </div>
+            <span class="badge bg-dark fs-6 px-3 py-2">Active Escrow Vault: <span id="escrowTotalVault" class="text-warning">GH₵ 0.00</span></span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Order ID</th>
+                  <th>Crop & Qty</th>
+                  <th>Route</th>
+                  <th>Escrow Locked</th>
+                  <th>Delivery Status</th>
+                  <th>Action / OTP Release</th>
+                </tr>
+              </thead>
+              <tbody id="activeOrdersTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PORTAL 4: ADMIN DISPUTE & TRUST CENTER -->
+      <section id="portal-admin" class="portal-section d-none">
+        <div class="glass-card p-4 mb-4">
+          <h3 class="fw-bold mb-1"><i class="bi bi-shield-check text-success me-2"></i>Admin Oversight: <span class="user-greeting-name">Administrator</span></h3>
+          <p class="text-muted mb-0">Monitor Ghana Card KYC verifications, escrow holds, and photo-backed quality disputes.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+              <i class="bi bi-shield-lock-fill fs-1 text-success"></i>
+              <h5 class="fw-bold mt-2">Escrow Protection</h5>
+              <p class="small text-muted">Zero buyer funds released without 4-digit OTP confirmation or admin dispute resolution.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+              <i class="bi bi-person-badge-fill fs-1 text-primary"></i>
+              <h5 class="fw-bold mt-2">Ghana Card KYC</h5>
+              <p class="small text-muted">Verified farmers receive +50 Trust Points and priority placement in buyer searches.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+              <i class="bi bi-exclamation-triangle-fill fs-1 text-danger"></i>
+              <h5 class="fw-bold mt-2">Active Disputes</h5>
+              <p class="small text-muted">0 open disputes. All deliveries operating normally.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Escrow MoMo Checkout Modal -->
+  <div class="modal fade" id="checkoutModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow-lg">
+        <div class="modal-header bg-success text-white rounded-top-4">
+          <h5 class="modal-title fw-bold"><i class="bi bi-shield-check me-2"></i>MoMo Escrow Checkout</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="checkoutDetails" class="mb-3"></div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Select Mobile Money Network</label>
+            <select id="momoNetwork" class="form-select">
+              <option value="MTN MoMo">MTN Mobile Money</option>
+              <option value="Telecel Cash">Telecel Cash</option>
+              <option value="AT Money">AT Money</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Buyer MoMo Number</label>
+            <input type="tel" id="buyerPhone" class="form-control" value="024 555 0199" required />
+          </div>
+          <div class="alert alert-warning small mb-0">
+            <i class="bi bi-info-circle-fill me-1"></i> Your money is held safely in Escrow. You will receive a <strong>4-digit OTP</strong> to give the driver only after inspecting your goods.
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+          <button type="button" class="btn btn-success w-100 btn-lg fw-bold" onclick="confirmEscrowPayment()">
+            Lock Funds in Escrow Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center text-bg-dark border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body fw-semibold" id="toastMessage">Action completed!</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
